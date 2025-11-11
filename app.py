@@ -12,8 +12,8 @@ from datetime import datetime, timedelta
 try:
     import psycopg
 except ImportError as e:
-    st.error(f"❌ Error importing psycopg2: {e}")
-    st.error("Please ensure psycopg2-binary is in requirements.txt")
+    st.error(f"❌ Error importing psycopg: {e}")
+    st.error("Please ensure psycopg[binary] is in requirements.txt")
     st.stop()
 
 # =====================================================
@@ -109,7 +109,7 @@ def get_recent_data(hours=24, region_filter=None):
 def get_active_alerts():
     """Obtener alertas activas"""
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
+        conn = psycopg.connect(**DB_CONFIG)
         
         query = """
         SELECT 
@@ -148,7 +148,7 @@ def get_active_alerts():
 def get_summary_metrics(hours=24):
     """Obtener métricas de resumen"""
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
+        conn = psycopg.connect(**DB_CONFIG)
         
         query = f"""
         SELECT 
