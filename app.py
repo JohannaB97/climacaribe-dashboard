@@ -4,7 +4,7 @@ Sistema de Monitoreo Meteorológico del Caribe Colombiano en Tiempo Real
 """
 
 import streamlit as st
-import psycopg2
+import psycopg
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -25,7 +25,7 @@ st.set_page_config(
 )
 
 # ============================================
-# CONFIGURACIÓN DE BASE DE DATOS
+# CONFIGURACIÓN DE BASE DE DATOS (solo variables de entorno)
 # ============================================
 
 DB_CONFIG = {
@@ -38,41 +38,45 @@ DB_CONFIG = {
 }
 
 # ============================================
-# FUNCIONES DE CONEXIÓN
+# FUNCIÓN DE CONEXIÓN
 # ============================================
 
 @st.cache_resource
 def get_db_connection():
-    """Crear y cachear conexión a base de datos"""
+    """Crear y cachear conexión a la base de datos PostgreSQL."""
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
+        conn = psycopg.connect(**DB_CONFIG)
         return conn
     except Exception as e:
-        st.error(f"❌ Error de conexión a base de datos: {e}")
-        st.info("💡 Verificar credenciales en el código (DB_CONFIG) o variables de entorno")
+        st.error(f"❌ Error conectando a la base de datos: {e}")
+        st.info("💡 Verifica tus credenciales en los Secrets de Streamlit Cloud")
         return None
 
+
 def fetch_data(query, params=None):
-    """Ejecutar query y retornar DataFrame (sin cache para datos en tiempo real)"""
+    """Ejecutar query y retornar DataFrame (sin cache para datos en tiempo real)."""
     conn = get_db_connection()
     if conn:
         try:
-            # Verificar que la conexión sigue activa
-            conn.isolation_level
-            df = pd.read_sql_query(query, conn, params=params)
-            return df
-        except (psycopg2.InterfaceError, psycopg2.OperationalError):
-            # Conexión perdida, limpiar cache y reconectar
-            st.cache_resource.clear()
-            conn = get_db_connection()
-            if conn:
+            with conn.cursor() as cur:
                 df = pd.read_sql_query(query, conn, params=params)
-                return df
-            return pd.DataFrame()
+            return df
         except Exception as e:
-            st.error(f"❌ Error en query: {e}")
+            st.error(f"❌ Error ejecutando consulta: {e}")
             return pd.DataFrame()
-    return pd.DataFrame()
+    else:
+        st.warning("⚠️ Sin conexión a la base de datos.")
+        return pd.DataFrame()
+
+# ============================================
+# TEST DE CONEXIÓN (puedes dejarlo o comentarlo luego)
+# ============================================
+
+conn_test = get_db_connection()
+if conn_test:
+    st.success("✅ Conexión exitosa a PostgreSQL en Azure")
+else:
+    st.error("❌ No se pudo conectar a la base de datos. Revisa los Secrets.")
 
 # ============================================
 # FUNCIONES DE ANÁLISIS
@@ -775,3 +779,4 @@ if not auto_refresh and iteration == 1:
     - El dashboard detecta automáticamente outliers basados en el umbral de z-score
 
     """)
+
