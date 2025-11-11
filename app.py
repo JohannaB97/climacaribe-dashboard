@@ -29,10 +29,10 @@ st.set_page_config(
 # ============================================
 
 DB_CONFIG = {
-    'host': os.environ.get('DB_HOST', 'climacaribe-bd-jb.postgres.database.azure.com'),
-    'dbname': os.environ.get('DB_NAME', 'postgres'),
-    'user': os.environ.get('DB_USER', 'johannabp850'),
-    'password': os.environ.get('DB_PASSWORD', 'Felicidad2025*'),
+    'host': os.environ['DB_HOST'],
+    'dbname': os.environ['DB_NAME'],
+    'user': os.environ['DB_USER'],
+    'password': os.environ['DB_PASSWORD'],
     'port': os.environ.get('DB_PORT', '5432'),
     'sslmode': 'require'
 }
@@ -773,4 +773,5 @@ if not auto_refresh and iteration == 1:
     - Ajusta el rango de tiempo para ver más o menos datos históricos
     - Usa los filtros de región para enfocarte en el Caribe o el Interior
     - El dashboard detecta automáticamente outliers basados en el umbral de z-score
+
     """)
