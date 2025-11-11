@@ -9,10 +9,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 
-# Import psycopg2 (from psycopg2-binary package)
 try:
-    import psycopg2
-    from psycopg2 import sql, extras
+    import psycopg
 except ImportError as e:
     st.error(f"❌ Error importing psycopg2: {e}")
     st.error("Please ensure psycopg2-binary is in requirements.txt")
@@ -73,7 +71,7 @@ DB_CONFIG = get_db_config()
 def get_recent_data(hours=24, region_filter=None):
     """Obtener datos recientes de la base de datos"""
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
+        conn = psycopg.connect(**DB_CONFIG)
         
         base_query = """
         SELECT 
@@ -401,3 +399,4 @@ if auto_refresh:
     import time
     time.sleep(30)
     st.rerun()
+
