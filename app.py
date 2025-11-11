@@ -72,7 +72,7 @@ def fetch_data(query, params=None):
 # TEST DE CONEXIÓN (puedes dejarlo o comentarlo luego)
 # ============================================
 
-#conn_test = get_db_connection()
+conn_test = get_db_connection()
 #if conn_test:
     #st.success("✅ Conexión exitosa a PostgreSQL en Azure")
 #else:
@@ -779,5 +779,6 @@ if not auto_refresh and iteration == 1:
     - El dashboard detecta automáticamente outliers basados en el umbral de z-score
 
     """)
+
 
 
