@@ -39,7 +39,7 @@ def get_db_config():
         if hasattr(st, 'secrets') and 'postgres' in st.secrets:
             return {
                 'host': st.secrets['postgres']['host'],
-                'database': st.secrets['postgres']['database'],
+                'dbname': st.secrets['postgres']['database'],
                 'user': st.secrets['postgres']['user'],
                 'password': st.secrets['postgres']['password'],
                 'port': st.secrets['postgres']['port'],
@@ -399,4 +399,5 @@ if auto_refresh:
     import time
     time.sleep(30)
     st.rerun()
+
 
